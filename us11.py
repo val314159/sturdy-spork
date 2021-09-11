@@ -6,21 +6,24 @@ from kista import *
 
 w3 = Web3()
 
-#print(Decimal)
-
 #print(dir(web3))
 #e = Web3.fromWei(3841357360894980500000001, 'ether')
 #print(e)
 
-w = Web3.toWei(3.1, 'ether')
-print(w, 'wei')
+if 0:
+    w = Web3.toWei(3.1, 'ether')
+    print(w, 'wei')
 
-e = Web3.fromWei(w, 'ether')
-print(e, 'eth')
+    e = Web3.fromWei(w, 'ether')
+    print(e, 'eth')
+    pass
 
-#exit()
+address = "206f5160ae22470faee089b2ed352c49"
+print(address)
+address = Web3.toChecksumAddress(address)
+print(address)
 
-#address = "YOUR ADDRESS"          # or None if you're not going to make transactions
+#address_key = "YOUR ADDRESS"          # or None if you're not going to make transactions
 #private_key = "YOUR PRIVATE KEY"  # or None if you're not going to make transactions
 address = None
 private_key = None
