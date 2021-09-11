@@ -1,0 +1,24 @@
+erc20.json:        "name": "Approval",
+erc20.json:        "name": "Transfer",
+
+erc20.json:        "name": "allowance",
+erc20.json:        "name": "approve",
+erc20.json:        "name": "balanceOf",
+
+erc20.json:        "name": "decimals",    -- opt
+erc20.json:        "name": "name"         -- opt
+erc20.json:        "name": "symbol",      -- opt
+erc20.json:        "name": "totalSupply", -- opt
+
+erc20.json:        "name": "transfer",
+erc20.json:        "name": "transferFrom",
+
+
+erc20m.json:        "name": "Approval",
+erc20m.json:        "name": "Transfer",
+
+erc20m.json:        "name": "allowance",
+erc20m.json:        "name": "approve",
+erc20m.json:        "name": "balanceOf",
+erc20m.json:        "name": "transfer",
+erc20m.json:        "name": "transferFrom",
