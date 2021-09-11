@@ -4,7 +4,7 @@ from uniswap import Uniswap
 from decimal import Decimal
 from kista import *
 
-w3 = Web3()
+#w3 = Web3()
 
 #print(dir(web3))
 #e = Web3.fromWei(3841357360894980500000001, 'ether')
@@ -17,11 +17,6 @@ if 0:
     e = Web3.fromWei(w, 'ether')
     print(e, 'eth')
     pass
-
-address = "206f5160ae22470faee089b2ed352c49"
-print(address)
-address = Web3.toChecksumAddress(address)
-print(address)
 
 #address_key = "YOUR ADDRESS"          # or None if you're not going to make transactions
 #private_key = "YOUR PRIVATE KEY"  # or None if you're not going to make transactions
@@ -48,12 +43,15 @@ print(erc20)
 
 a = erc20['weth']
 print("A", a)
+print("A", type(a))
 
-a2 = WrapAccount(a)
 
-print("A", a2)
 
-print("A", a2.balance)
+#a2 = WrapAccount(a)
+
+#print("A", a2)
+
+#print("A", a2.balance)
 
 print("-----")
 
