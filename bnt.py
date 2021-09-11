@@ -51,7 +51,7 @@ if 0:
 #private_key = "YOUR PRIVATE KEY"  # or None if you're not going to make transactions
 address = None
 private_key = None
-version = 1
+#version = 1
 #version = 2                       # specify which version of Uniswap to use
 #version = 3                       # specify which version of Uniswap to use
 #provider = "WEB3 PROVIDER URL"    # can also be set through the environment variable `PROVIDER`
@@ -82,11 +82,9 @@ for k, v in dict(
     pass
 
 #print(erc20)
-
 #a = erc20['weth']
 #print("A", a)
 #print("A", type(a))
-
 #print(kista.load_abi('IERC20'))
 
 def LoadContract(address, name):
@@ -114,6 +112,12 @@ for k, v in erc20.items():
     try:
         w = uniswap3.get_price_input(v, erc20['dai'], 10**18)
         print(3, w, 'weii', 'dai')
+    except ContractLogicError:
+        print("ERR")
+        pass
+    try:
+        w = uniswap3.get_price_input(v, erc20['usd'], 10**18)
+        print(3, w, 'weii', 'usd')
     except ContractLogicError:
         print("ERR")
         pass
