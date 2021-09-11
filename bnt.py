@@ -1,4 +1,5 @@
 import os, sys, json, time, web3
+from web3.exceptions import *
 from web3 import Web3, HTTPProvider
 from pprint import pprint
 
@@ -22,8 +23,8 @@ if w3.isConnected():
 else:
     raise Exception('not connected')
 
-print(w3.eth.get_balance(a0))
-print(w3.eth.get_balance(a1))
+#print(w3.eth.get_balance(a0))
+#print(w3.eth.get_balance(a1))
 
 #import web3
 #from web3 import Web3
@@ -59,31 +60,87 @@ version = 1
 #uniswap = Uniswap(address=address, private_key=private_key, version=version, provider=provider)
 
 #provider = "https://mainnet.infura.io/v3/206f5160ae22470faee089b2ed352c49"
-uniswap = Uniswap(address=address, private_key=private_key, version=version)
+#uniswap = Uniswap(address=address, private_key=private_key, version=version)
+
+uniswap1 = Uniswap(address=address, private_key=private_key, version=1)
+uniswap2 = Uniswap(address=address, private_key=private_key, version=2)
+uniswap3 = Uniswap(address=address, private_key=private_key, version=3)
 
 erc20 = dict()
+e00='0x0000000000000000000000000000000000000000'
 for k, v in dict(
-        weth='0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+        e00='0x0000000000000000000000000000000000000000',
+        eth='0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+        dai='0x6b175474e89094c44da98b954eedeac495271d0f',
+        btc='0x2260fac5e5542a773aa44fbcfedf7c193bc2c599',
+        usd='0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+        uni='0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
 ).items():
-    print(k, v)
-    print(Web3.toChecksumAddress(v))
+    #print(k, v)
+    #print(Web3.toChecksumAddress(v))
     erc20[k] = Web3.toChecksumAddress(v)
     pass
 
-print(erc20)
+#print(erc20)
 
-a = erc20['weth']
-print("A", a)
-print("A", type(a))
+#a = erc20['weth']
+#print("A", a)
+#print("A", type(a))
 
-print(kista.load_abi('IERC20'))
+#print(kista.load_abi('IERC20'))
 
-abi = kista.load_abi('IERC20')
+def LoadContract(address, name):
+    return kista.WrapContract(
+        w3.eth.contract(address=address, abi=kista.load_abi(name)))
 
-c0 = w3.eth.contract(address=a, abi=abi)
-c1 = kista.WrapContract(c0)
-print(c1.symbol())
-print(c1.totalSupply())
+for k, v in erc20.items():
+    print("================")
+    c1 = LoadContract(v, 'IERC20')
+    try:
+        info = (c1.name(), c1.symbol(), c1.decimals(), c1.totalSupply())
+        print(info)
+    except BadFunctionCallOutput:
+        print("SKIP", k)
+        continue
+    try:
+        #w = uniswap2.get_price_input(v, erc20['dai'], 10**18)#, route=erc20['uni'])
+        #print(2, w, 'weii')
+        #w = uniswap2.get_price_input(v, e00, 10**18)
+        #print(2, w, 'weii')
+        w = uniswap3.get_price_input(v, erc20['eth'], 10**18)
+        print(3, w, 'weii', 'weth')
+    except ContractLogicError:
+        print("ERR")
+    try:
+        w = uniswap3.get_price_input(v, erc20['dai'], 10**18)
+        print(3, w, 'weii', 'dai')
+    except ContractLogicError:
+        print("ERR")
+        pass
+
+    pass
+
+#print(type(erc20['eth']))
+
+if 0:
+    w = uniswap2.get_price_input(erc20['eth'], erc20['dai'], 10**18)
+    d = Web3.fromWei(w, 'ether')
+    print(2, d, 'dai')
+
+    w = uniswap3.get_price_input(erc20['eth'], erc20['dai'], 10**18)
+    d = Web3.fromWei(w, 'ether')
+    print(3, d, 'dai')
+
+    w = uniswap2.get_price_output(erc20['eth'], erc20['dai'], 10**18)
+    d = Web3.fromWei(w, 'ether')
+    print(2, d, 'dai')
+
+    w = uniswap3.get_price_output(erc20['eth'], erc20['dai'], 10**18)
+    d = Web3.fromWei(w, 'ether')
+    print(3, d, 'dai')
+
+exit()
+
 #rint(c0.functions())
 #a2 = WrapAccount(a)
 
@@ -106,6 +163,9 @@ for k,v in erc20:
 
 
 x1 = uniswap.get_ex_eth_balance(erc20['weth'])
+
+
+
 
 exit()
 
