@@ -137,19 +137,21 @@ print("F2", factory.feeAmountTickSpacing(11))
 #print("PL", get_pool(a1,a2,fee))
 
 pool_address = get_pool(symbol0="weth",symbol1="dai")
+print("PL", pool_address)
 
+pool_address = get_pool(symbol0="wbtc",symbol1="usdc")
 print("PL", pool_address)
 
 pool = LoadContract(pool_address, "UniswapV3Pool")
 
-print(pool.token0())
-print(pool.token1())
+#print(pool.token0())
+#print(pool.token1())
 
 tok0 = LoadContract(pool.token0(), "IERC20")
 tok1 = LoadContract(pool.token1(), "IERC20")
 
-print("b0", tok0.balanceOf(pool_address))
-print("b1", tok1.balanceOf(pool_address))
+print("b0", repr(tok0.name()), tok0.balanceOf(pool_address), tok0.symbol())
+print("b1", repr(tok1.name()), tok1.balanceOf(pool_address), tok1.symbol())
 
 print(pool.factory())
 print(pool.fee())
