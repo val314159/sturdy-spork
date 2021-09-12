@@ -130,11 +130,65 @@ def get_pool(token0=None, token1=None, fee=3000, symbol0=None, symbol1=None):
 #a1 = erc20['weth']
 #a2 = erc20['dai']
 
-print("F1", factory.owner())
-print("F2", factory.feeAmountTickSpacing(11))
+#print("F1", factory.owner())
+#print("F2", factory.feeAmountTickSpacing(11))
 
 #print("PL", factory.getPool(a1,a2,fee))
 #print("PL", get_pool(a1,a2,fee))
+
+def v3_pool_info(symbol0, symbol1, fee=3000):
+    pool_address = get_pool(symbol0=symbol0,
+                            symbol1=symbol1, fee=fee)
+    print("PL", pool_address)
+    pool = LoadContract(pool_address, "UniswapV3Pool")
+    tok0 = LoadContract(pool.token0(), "IERC20")
+    tok1 = LoadContract(pool.token1(), "IERC20")
+
+    #print("  factory", pool.factory())
+
+    print("  token0", repr(tok0.name()), "balance", tok0.balanceOf(pool_address) / (10**tok0.decimals()), tok0.symbol())
+    print("  token1", repr(tok1.name()), "balance", tok1.balanceOf(pool_address) / (10**tok1.decimals()), tok1.symbol())
+    
+    print("  fee", pool.fee())
+    return pool, tok0, tok1
+
+v3_pool_info('usdc', 'weth')
+
+pool, tok0, tok1 = v3_pool_info('usdc', 'dai', 500)
+
+print("X")
+print(pool.tickSpacing())
+#print(pool.maxLiquidityPerTick())
+#print(pool.feeGrowthGlobal0X128())
+#print(pool.feeGrowthGlobal1X128())
+
+print(pool.protocolFees())
+print(pool.liquidity())
+
+print(pool.slot0())
+print("sqrtPricex96", "tick", "obIndex", "obCard", "obCardNext", "feeProt", "unlocked")
+
+print("XXXX")
+print(pool.observe([60,0]))
+print(pool.observe([0,60]))
+print(pool.observe([60,0]))
+print(pool.observe([0,60]))
+
+#print(pool.sqrtPriceLimitX96())
+
+exit()
+for n in range(1600000):
+    ob = pool.observations(n)
+    if not ob[-1]:
+        break
+    print(n,ob)
+    pass
+
+print(n)
+
+print(pool.sqrtPriceLimitX96())
+
+exit()
 
 pool_address = get_pool(symbol0="weth",symbol1="dai")
 print("PL", pool_address)
@@ -150,13 +204,14 @@ pool = LoadContract(pool_address, "UniswapV3Pool")
 tok0 = LoadContract(pool.token0(), "IERC20")
 tok1 = LoadContract(pool.token1(), "IERC20")
 
-print("b0", repr(tok0.name()), tok0.balanceOf(pool_address), tok0.symbol())
-print("b1", repr(tok1.name()), tok1.balanceOf(pool_address), tok1.symbol())
+print("factory", pool.factory())
 
-print(pool.factory())
-print(pool.fee())
-print(pool.token0())
-print(pool.token1())
+print("token0", repr(tok0.name()), "balance", tok0.balanceOf(pool_address), tok0.symbol())
+print("token1", repr(tok1.name()), "balance", tok1.balanceOf(pool_address), tok1.symbol())
+
+print("fee", pool.fee())
+#print(pool.token0())
+#print(pool.token1())
 #print(a1)
 #print(a2)
 print("X")
@@ -177,6 +232,7 @@ for n in range(1600000):
         break
     print(n,ob)
     pass
+
 #print(n,pool.observations(n))
 #print(pool.balance0())
 #print(pool.balance1())
