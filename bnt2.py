@@ -162,6 +162,14 @@ print(pool.token1())
 print("X")
 print(pool.tickSpacing())
 print(pool.maxLiquidityPerTick())
+
+print(pool.feeGrowthGlobal0X128())
+print(pool.feeGrowthGlobal1X128())
+
+print("PFEES")
+print(pool.protocolFees())
+print(pool.liquidity())
+
 print(pool.slot0())
 for n in range(1600000):
     ob = pool.observations(n)
