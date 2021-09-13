@@ -29,24 +29,21 @@ from decimal import Decimal
 #from kista import *
 import kista
 
-def LoadContract(address, name):
+def LoadContract(name, address):
     return kista.WrapContract(
-        w3.eth.contract(address=address, abi=kista.load_abi(name)))
-
-def LoadContract2(name, address):
-    return LoadContract(address, name)
+        w3.eth.contract(address=address, abi=kista.load_abi(name))) 
 
 #c0 = LoadContract2( 'UniswapV3Factory',                   '0x1F98431c8aD98523631AE4a59f267346ea31F984')
-#c1 = LoadContract2( 'Multicall2',                         '0x5BA1e12693Dc8F9c48aAD8770482f4739bEeD696')
-#c2 = LoadContract2( 'ProxyAdmin',                         '0xB753548F6E010e7e680BA186F9Ca1BdAB2E90cf2')
-#c3 = LoadContract2( 'TickLens',                           '0xbfd8137f7d1516D3ea5cA83523914859ec47F573')
-#c4 = LoadContract2( 'Quoter',                             '0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6')
-#c5 = LoadContract2( 'SwapRouter',                         '0xE592427A0AEce92De3Edee1F18E0157C05861564')
-#c6 = LoadContract2( 'NFTDescriptor',                      '0x42B24A95702b9986e82d421cC3568932790A48Ec')
-#c7 = LoadContract2( 'NonfungibleTokenPositionDescriptor', '0x91ae842A5Ffd8d12023116943e72A606179294f3')
-#c8 = LoadContract2( 'TransparentUpgradeableProxy',        '0xEe6A57eC80ea46401049E92587E52f5Ec1c24785')
-#c9 = LoadContract2( 'NonfungiblePositionManager',         '0xC36442b4a4522E871399CD717aBDD847Ab11FE88')
-#ca = LoadContract2( 'V3Migrator',                         '0xA5644E29708357803b5A882D272c41cC0dF92B34')
+#c1 = LoadContract( 'Multicall2',                         '0x5BA1e12693Dc8F9c48aAD8770482f4739bEeD696')
+#c2 = LoadContract( 'ProxyAdmin',                         '0xB753548F6E010e7e680BA186F9Ca1BdAB2E90cf2')
+#c3 = LoadContract( 'TickLens',                           '0xbfd8137f7d1516D3ea5cA83523914859ec47F573')
+#c4 = LoadContract( 'Quoter',                             '0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6')
+#c5 = LoadContract( 'SwapRouter',                         '0xE592427A0AEce92De3Edee1F18E0157C05861564')
+#c6 = LoadContract( 'NFTDescriptor',                      '0x42B24A95702b9986e82d421cC3568932790A48Ec')
+#c7 = LoadContract( 'NonfungibleTokenPositionDescriptor', '0x91ae842A5Ffd8d12023116943e72A606179294f3')
+#c8 = LoadContract( 'TransparentUpgradeableProxy',        '0xEe6A57eC80ea46401049E92587E52f5Ec1c24785')
+#c9 = LoadContract( 'NonfungiblePositionManager',         '0xC36442b4a4522E871399CD717aBDD847Ab11FE88')
+#ca = LoadContract( 'V3Migrator',                         '0xA5644E29708357803b5A882D272c41cC0dF92B34')
 
 #print(w3.eth.get_balance(a0))
 #print(w3.eth.get_balance(a1))
@@ -116,15 +113,29 @@ for k, v in dict(
 #print("A", type(a))
 #print(kista.load_abi('IERC20'))
 
+
 #factory_address = "0x1F98431c8aD98523631AE4a59f267346ea31F984"
-factory2 = LoadContract2("UniswapV2Factory", "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f")
-factory3 = LoadContract2("UniswapV3Factory", "0x1F98431c8aD98523631AE4a59f267346ea31F984")
+
+#factory1 = LoadContract("uniswap_factory",  "0xc0a47dFe034B400B47bDaD5FecDa2621de6c4d95")
+
+factory2 = LoadContract("UniswapV2Factory", "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f")
+factory3 = LoadContract("UniswapV3Factory", "0x1F98431c8aD98523631AE4a59f267346ea31F984")
 
 fee = 10000
 fee =   500
 fee =  3000
 
 fees = (10000, 3000, 500)
+
+def get_exchange(token0=None, token1=None, fee=3000, symbol0=None, symbol1=None):
+    if token0 is None: token0 = erc20[symbol0]
+    if token1 is None: token1 = erc20[symbol1]
+    return factory1.getPool(token0, token1, fee)
+
+def get_pair(token0=None, token1=None, fee=3000, symbol0=None, symbol1=None):
+    if token0 is None: token0 = erc20[symbol0]
+    if token1 is None: token1 = erc20[symbol1]
+    return factory2.getPool(token0, token1, fee)
 
 def get_pool(token0=None, token1=None, fee=3000, symbol0=None, symbol1=None):
     if token0 is None: token0 = erc20[symbol0]
@@ -143,22 +154,66 @@ def get_pool(token0=None, token1=None, fee=3000, symbol0=None, symbol1=None):
 def v3_pool_info(symbol0, symbol1, fee=3000):
     pool_address = get_pool(symbol0=symbol0,
                             symbol1=symbol1, fee=fee)
-    print("PL", pool_address)
-    pool = LoadContract(pool_address, "UniswapV3Pool")
-    tok0 = LoadContract(pool.token0(), "IERC20")
-    tok1 = LoadContract(pool.token1(), "IERC20")
+    print()
+    print("PL", pool_address, "fee", fee)
+    pool = LoadContract("UniswapV3Pool", pool_address)
+    tok0 = LoadContract("IERC20", pool.token0())
+    tok1 = LoadContract("IERC20", pool.token1())
 
     #print("  factory", pool.factory())
 
     print("  token0", repr(tok0.name()), "balance", tok0.balanceOf(pool_address) / (10**tok0.decimals()), tok0.symbol())
     print("  token1", repr(tok1.name()), "balance", tok1.balanceOf(pool_address) / (10**tok1.decimals()), tok1.symbol())
     
-    print("  fee", pool.fee())
+    #print("  fee", pool.fee())
     return pool, tok0, tok1
 
-v3_pool_info('usdc', 'weth')
+def v3_tokens_locked(symbol0, symbol1, fee=3000):
+    pool_address = get_pool(symbol0=symbol0,
+                            symbol1=symbol1, fee=fee)
+    #print("PL", pool_address, "fee", fee)
+    pool = LoadContract("UniswapV3Pool", pool_address)
+    tok0 = LoadContract("IERC20", pool.token0())
+    tok1 = LoadContract("IERC20", pool.token1())
 
-pool, tok0, tok1 = v3_pool_info('usdc', 'dai', 500)
+    #print("  factory", pool.factory())
+
+    #print("  token0", repr(tok0.name()), "balance", tok0.balanceOf(pool_address) / (10**tok0.decimals()), tok0.symbol())
+    #print("  token1", repr(tok1.name()), "balance", tok1.balanceOf(pool_address) / (10**tok1.decimals()), tok1.symbol())
+    
+    #print("  fee", pool.fee())
+    #return pool, tok0, tok1
+
+#v3_pool_info('usdc', 'weth')
+
+pool, tok0, tok1 = v3_pool_info('usdc', 'weth', 3000)
+
+pool, tok0, tok1 = v3_pool_info('wbtc', 'weth', 3000)
+
+pool, tok0, tok1 = v3_pool_info('usdc', 'weth',  500)
+
+pool, tok0, tok1 = v3_pool_info('dai',  'usdc',  500)
+
+pool, tok0, tok1 = v3_pool_info('uni',  'weth', 3000)
+
+if 0:
+    for fee in fees:
+        pool, tok0, tok1 = v3_pool_info('usdc', 'weth', fee)
+        #print("XXXX", pool.address)
+        pass
+
+    for fee in fees:
+        pool, tok0, tok1 = v3_pool_info('wbtc', 'weth', fee)
+        #print("XXXX", pool.address)
+        pass
+
+    for fee in fees:
+        pool, tok0, tok1 = v3_pool_info('usdc', 'dai', fee)
+        #print("XXXX", pool.address)
+        pass
+    pass
+
+exit()
 
 print("X")
 print(pool.tickSpacing())

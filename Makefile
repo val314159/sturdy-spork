@@ -5,6 +5,8 @@ out:
 	cd uniswap-v2-core ; solc-0.5.16 contracts/*.sol -oout --abi --bin
 	cd uniswap-v3-core ; solc-0.7.6  contracts/*.sol -oout --abi --bin
 	mkdir -p out ; cp uniswap-v?-core/out/*.abi out
+	cd out ; cp ../uniswap-v1/abi/uniswap_exchange.json uniswap_exchange.abi
+	cd out ; cp ../uniswap-v1/abi/uniswap_factory.json  uniswap_factory.abi
 qqqq:
 	$(MAKE) uniswap
 uniswap: uniswap-v2-core/out uniswap-v3-core/out
